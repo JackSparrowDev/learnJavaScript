@@ -2,46 +2,54 @@ var botao = document.querySelector('#adicionar-paciente');
 botao.addEventListener('click',function(event){
     event.preventDefault();
 
-    // 1º capturar dados digitados no formulário
     var form = document.querySelector('#form-adiciona');
-
-    var nome = form.nome.value;
-    var peso = form.peso.value;
-    var altura = form.altura.value;
-    var gordura = form.gordura.value;
-
-    // 2º criar novo paciente - tr e td's
-    var pacienteTr = document.createElement('tr');
-
-    var nomeTd = document.createElement('td');
-    var pesoTd = document.createElement('td');
-    var alturaTd = document.createElement('td');
-    var gorduraTd = document.createElement('td');
-    var imcTd = document.createElement('td');
-
-    // 3º popular as td's com os dados capturados do formulário
-    nomeTd.textContent = nome;
-    pesoTd.textContent = peso;
-    alturaTd.textContent = altura;
-    gorduraTd.textContent = gordura;
-
-    if((peso > 300 || peso <=0) || (altura > 3 || altura <= 0.1)){
-        imcTd.textContent = 'Medidas inválidas';
-        // ***** adiciona uma classe à lista de classes já existentes no html
-        pacienteTr.classList.add('medida-invalida');
-    }else{
-        var imc = calculaImc(peso,altura);
-        imcTd.textContent = imc;
-    }
-
-    // 4º inserir as td's na tr
-    pacienteTr.appendChild(nomeTd);
-    pacienteTr.appendChild(pesoTd);
-    pacienteTr.appendChild(alturaTd);
-    pacienteTr.appendChild(gorduraTd);
-    pacienteTr.appendChild(imcTd);
-
-    // 5º inserir a tr na tabela - tbody
+    var paciente = obtemPacienteDoFormulario(form);
+    var pacienteTr = montaTr(paciente);
     var tabela = document.querySelector('#tabela-pacientes');
     tabela.appendChild(pacienteTr);
+
+    form.reset();
+
+    function obtemPacienteDoFormulario(paciente){
+        var paciente = {
+            nome : form.nome.value,
+            peso : form.peso.value,
+            altura : form.altura.value,
+            gordura : form.gordura.value,
+            imc : calculaImc(form.peso.value, form.altura.value)
+        }
+        return paciente;
+    }
+
+    console.log(paciente);
+
+    function montaTr(paciente){
+        var pacienteTr = document.createElement('tr');
+        pacienteTr.classList.add('paciente');
+        pacienteTr.appendChild(montaTd(paciente.nome, 'info-nome'));
+        pacienteTr.appendChild(montaTd(paciente.peso, 'info-peso'));
+        pacienteTr.appendChild(montaTd(paciente.altura, 'info-altura'));
+        pacienteTr.appendChild(montaTd(paciente.gordura, 'info-gordura'));
+        pacienteTr.appendChild(montaTd(paciente.imc, 'info-imc'));
+        return pacienteTr;
+    }
+
+    function montaTd(dado,classe){
+        var td = document.createElement('td');
+        td.classList.add(classe);
+        td.textContent = dado;
+        return td;
+    }
+
+    // continuar trabalhando na validação
+    function validaMedidas(peso,altura){
+        if((peso > 300 || peso <=0) || (altura > 3 || altura <= 0.1)){
+            imcTd.textContent = 'Medidas inválidas';
+            pacienteTr.classList.add('medida-invalida');
+        }else{
+            var imc = calculaImc(peso,altura);
+            imcTd.textContent = imc;
+        }
+    }
+
 });
