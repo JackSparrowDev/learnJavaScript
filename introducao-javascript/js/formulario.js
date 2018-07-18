@@ -24,7 +24,15 @@ botao.addEventListener('click',function(event){
     pesoTd.textContent = peso;
     alturaTd.textContent = altura;
     gorduraTd.textContent = gordura;
-    imcTd.textContent = calculaImc(peso,altura);
+
+    if((peso > 300 || peso <=0) || (altura > 3 || altura <= 0.1)){
+        imcTd.textContent = 'Medidas inválidas';
+        // ***** adiciona uma classe à lista de classes já existentes no html
+        pacienteTr.classList.add('medida-invalida');
+    }else{
+        var imc = calculaImc(peso,altura);
+        imcTd.textContent = imc;
+    }
 
     // 4º inserir as td's na tr
     pacienteTr.appendChild(nomeTd);
@@ -36,5 +44,4 @@ botao.addEventListener('click',function(event){
     // 5º inserir a tr na tabela - tbody
     var tabela = document.querySelector('#tabela-pacientes');
     tabela.appendChild(pacienteTr);
-
 });
